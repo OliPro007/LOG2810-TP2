@@ -28,6 +28,9 @@
 *.out
 *.app
 
-#Clion
+# Visual Studio Project
+*.vcxproj*
+
+# Clion
 CMakeLists.txt
 .idea/
