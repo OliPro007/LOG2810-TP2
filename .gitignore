@@ -34,3 +34,4 @@
 # Clion
 CMakeLists.txt
 .idea/
+*.iml
