@@ -133,14 +133,13 @@ void creerLexique(const std::string& repertoire) {
 #ifdef WIN32
     
 #elif __APPLE__ || __linux__
-    DIR* dir = opendir(repertoire);
+    DIR* dir = opendir(repertoire.c_str());
     struct dirent* fich;
     if(dir != nullptr) {
         while((fich = readdir(dir)) != nullptr) {
             std::string nomFichier(fich->d_name);
-            if(nomFichier.substr(nomFichier.length() - 4) == ".txt")
-                std::cout << nomFichier << std::endl;
-                //fichier.push_back(nomFichier);
+            if(nomFichier != "." && nomFichier != ".." && nomFichier.substr(nomFichier.size() - 4) == ".txt")
+                fichiers.push_back(nomFichier);
         }
 
         closedir(dir);
