@@ -1,5 +1,7 @@
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #ifdef WIN32
@@ -48,7 +50,11 @@ int main() {
                 cout << "Entrez le repertoire contenant les fichier .txt des differentes zones avec le parcours relatif ou absolue:" << endl;
                 cin >> repertoire;
 
-                creerLexique(repertoire);
+                try {
+                    creerLexique(repertoire);
+                } catch(std::exception& e) {
+                    std::cerr << "ERREUR: " << e.what() << std::endl;
+                }
             }
                 break;
 
@@ -144,6 +150,13 @@ void creerLexique(const std::string& repertoire) {
         throw std::exception("Repertoire invalide ou ne contient pas de fichiers valides.");
     }
 #endif
+
+    for(auto fichier : fichiers) {
+        std::ifstream stream(fichier);
+        while(!stream.eof()) {
+
+        }
+    }
 }
 
 void equilibrerFlotte() {
