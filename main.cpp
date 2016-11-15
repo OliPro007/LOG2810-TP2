@@ -59,10 +59,33 @@ int main() {
                     break;
                 }
 
-                int fichierClient = 0;
+                int fichierClient = 0, fichierVehicule = 0;
 
                 cout << "Voulez-vous entrer les clients via un fichier .txt?" << endl
                      << "Oui (1) ou Non (2)" << endl;
+                cin >> fichierClient;
+
+                if (fichierClient == 1) {
+
+                } else if (fichierClient == 2) {
+
+                } else {
+                    cerr << "ERREUR: Choix invalide" << endl;
+                    break;
+                }
+
+
+
+
+
+                cout << "Voulez-vous entrer les vehicules via un fichier .txt?" << endl
+                     << "Oui (1) ou Non (2)" << endl;
+                cin >> fichierVehicule;
+
+                if (fichierVehicule != 1 && fichierVehicule != 2) {
+                    cerr << "ERREUR: Choix invalide" << endl;
+                    break;
+                }
 
             }
                 break;
