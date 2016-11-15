@@ -22,6 +22,8 @@ using namespace std;
 int main() {
     char choix = 0;
     vector<Zone> zones;
+    vector<Client> clients;
+    vector<Vehicule> vehicules;
 
     while (true) {
         cout << "====================================================" << endl
@@ -66,8 +68,10 @@ int main() {
                 cin >> fichierClient;
 
                 if (fichierClient == 1) {
+                    // Lire client d'un fichier
 
                 } else if (fichierClient == 2) {
+                    // Lire client du command line
 
                 } else {
                     cerr << "ERREUR: Choix invalide" << endl;
@@ -75,14 +79,17 @@ int main() {
                 }
 
 
-
-
-
                 cout << "Voulez-vous entrer les vehicules via un fichier .txt?" << endl
                      << "Oui (1) ou Non (2)" << endl;
                 cin >> fichierVehicule;
 
-                if (fichierVehicule != 1 && fichierVehicule != 2) {
+                if (fichierVehicule == 1) {
+                    // Lire vehicule d'un fichier
+
+                } else if (fichierVehicule == 2) {
+                    // Lire vehicule du command line
+
+                } else {
                     cerr << "ERREUR: Choix invalide" << endl;
                     break;
                 }
