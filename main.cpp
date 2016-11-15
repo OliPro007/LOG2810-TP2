@@ -21,6 +21,7 @@ using namespace std;
 
 int main() {
     char choix = 0;
+    vector<Zone> zones;
 
     while (true) {
         cout << "====================================================" << endl
@@ -40,46 +41,29 @@ int main() {
         switch (choix) {
             case 'a':
             {
-                char type;
-                int autonomieMax, autonomieActuelle;
+                std::string repertoire;
 
                 // Determine le type de vehicule
-                cout << "Entrez les caracteristique du vehicule selon la methode suivante:" << endl
-                     << "Type de vehicule (choix: (e)ssence; e(l)ectrique; (h)ybrid): ";
+                cout << "Entrez le repertoire contenant les fichier .txt des differentes zones avec le parcours relatif ou absolue:" << endl;
+                cin >> repertoire;
 
-                cin >> type;
-
-                if (type != 'e' && type != 'l' && type != 'h') {
-                    cerr << "ERREUR: Type de vehicule invalide" << endl;
-                    break;
-                }
-
-                // Determine l'autonomie maximale et actuelle du vehicule
-                cout << "Autonomie maximale du vehicule: ";
-                cin >> autonomieMax;
-
-                cout << "Autonomie actuelle du vehicule: ";
-                cin >> autonomieActuelle;
-
-                if (autonomieActuelle > autonomieMax) {
-                    cerr << "ERREUR: L'autonomie actuelle ne peut pas etre superieure a l'autonomie maximale" << endl;
-                    break;
-                }
-
-                // Cree le vehicule
-                vehicule = new Vehicule(type, autonomieMax, autonomieActuelle);
+                creerLexique(repertoire);
             }
                 break;
 
             case 'b':
             {
-                string nomFichier;
-                cout << "Entrez le nom du fichier contenant les informations sur la carte: ";
-                cin >> nomFichier;
+                if (zones.size() == 0) {
+                    cerr << "ERREUR: Les zones doivent etre configure avant de pouvoir entrer les client et les vehicule"
+                         << endl;
+                    break;
+                }
 
-                // Cree et affiche le graphe
-                graphe = creerGraphe(nomFichier);
-                lireGraphe(graphe);
+                int fichierClient = 0;
+
+                cout << "Voulez-vous entrer les clients via un fichier .txt?" << endl
+                     << "Oui (1) ou Non (2)" << endl;
+
             }
                 break;
 
