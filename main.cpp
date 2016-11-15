@@ -1,4 +1,11 @@
 #include <iostream>
+#include <vector>
+
+#ifdef WIN32
+#include <Windows.h>
+#elif __APPLE__ || __linux__ 
+#include <dirent.h>
+#endif
 
 #include "Client.h"
 #include "Vehicule.h"
@@ -122,6 +129,23 @@ int main() {
 
 void creerLexique(const std::string& repertoire) {
     //TODO
+    std::vector<std::string> fichiers;
+#ifdef WIN32
+    
+#elif __APPLE__ || __linux__
+    DIR* dir = opendir(repertoire);
+    struct dirent* fich;
+    if(dir != nullptr) {
+        while((fich = readdir(dir)) != nullptr) {
+            std::string nomFichier(fich->d_name);
+            if(nomFichier.substr(nomFichier.length() - 4) == ".txt")
+                std::cout << nomFichier << std::endl;
+                //fichier.push_back(nomFichier);
+        }
+
+        closedir(dir);
+    }
+#endif
 }
 
 void equilibrerFlotte() {
