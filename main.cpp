@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 #ifdef WIN32
@@ -131,7 +132,19 @@ void creerLexique(const std::string& repertoire) {
     //TODO
     std::vector<std::string> fichiers;
 #ifdef WIN32
-    
+    std::string regex = repertoire + "/*.txt";
+    WIN32_FIND_DATAA data;
+    HANDLE handle = FindFirstFileA(regex.c_str(), &data);
+    if(handle != INVALID_HANDLE_VALUE) {
+        do {
+            if(!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+                fichiers.push_back(data.cFileName);
+        }while(FindNextFileA(handle, &data));
+
+        FindClose(handle);
+    } else {
+        throw std::exception("Repertoire invalide ou ne contient pas de fichiers valides.");
+    }
 #elif __APPLE__ || __linux__
     DIR* dir = opendir(repertoire.c_str());
     struct dirent* fich;
@@ -143,6 +156,8 @@ void creerLexique(const std::string& repertoire) {
         }
 
         closedir(dir);
+    } else {
+        throw std::exception("Repertoire invalide ou ne contient pas de fichiers valides.");
     }
 #endif
 }
