@@ -1,5 +1,10 @@
 #include <iostream>
 
+#include "Client.h"
+#include "Vehicule.h"
+#include "Zone.h"
+
+
 //TODO: Complete return types and parameters.
 void creerLexique(const std::string& repertoire);
 void equilibrerFlotte();
@@ -9,8 +14,6 @@ using namespace std;
 
 int main() {
     char choix = 0;
-//    Graphe* graphe = nullptr;
-//    Vehicule* vehicule = nullptr;
 
     while (true) {
         cout << "====================================================" << endl
