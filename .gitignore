@@ -29,6 +29,8 @@
 *.app
 
 # Visual Studio Project
+[Dd]ebug/
+[Rr]elease/
 *.vcxproj*
 
 # Clion
