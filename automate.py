@@ -31,6 +31,16 @@ def equilibrer_flotte():
 
 
 def lancer_simulation(zones, clients, vehicules):
+    """
+    Suggestion:
+    1- Noter les donner avant la simulation pour le tableau demande
+    2- faire la liste de tous les groupe present
+    3- faire des liste contenant tous les client par groupe
+    4- deplacer les client du 1er groupe
+    5- equilibrer les vehicule
+    6- refaire 4 avec prochain groupe
+    7- afficher les 2 tableau demande
+    """
     pass
 
 
@@ -78,7 +88,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                        liste_client = file.read()
+                        liste_client = file.read().replace("\n", "")
 
                 except FileNotFoundError:
                     print("Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
@@ -94,6 +104,7 @@ def main():
                 print("Choix invalide.", file=sys.stderr)
 
             for client in liste_client[:-1].split(";"):
+                # Valide les quartiers de depart et de destination des clients
                 depart = client.split(',')[0]
                 destination = client.split(',')[1]
                 groupe = int(client.split(',')[2])
@@ -107,14 +118,18 @@ def main():
                         destination_valide = True
 
                 if not depart_valide or not destination_valide:
-                    print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule))
-                    vehicules = []
-                    continue
-                clients.append({'depart': client.split(',')[0],
-                                'destination': client.split(',')[1],
-                                'groupe': int(client.split(',')[2]),
+                    print("ERREUR: zone invalide: {}  {}".format(depart, destination))
+                    clients = []
+                    break
+
+                # Ajout du client a la liste
+                clients.append({'depart': depart,
+                                'destination': destination,
+                                'groupe': groupe,
                                 },
                                )
+            if not clients:
+                continue
 
             print("Voulez-vous entrer les informations des véhicules à partir d'un fichier .txt? (o/n): ", end="")
             utiliser_fichier = input()
@@ -127,7 +142,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                        liste_vehicule = file.read()
+                        liste_vehicule = file.read().replace("\n", "")
 
                 except FileNotFoundError as e:
                     print(e.strerror, file=sys.stderr)
@@ -143,19 +158,21 @@ def main():
                 continue
 
             for depart_vehicule in liste_vehicule[:-1].split(';'):
-                # Valider zone existante et choisir un quartier arbitrairement pour le depart
+                # Valide la zone de depart des vehicule
                 for zone in zones:
                     if zone.contains(depart_vehicule):
                         zone.nb_vehicule += 1
                         vehicules.append({'zone': depart_vehicule.strip(),
                                           'quartier': zone.select_random_quartier(),
+                                          'nb_trajet_vide': 0,
+                                          'nb_trajet_plein': 0,
                                           },
                                          )
                         break
                 else:
                     print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule), file=sys.stderr)
                     vehicules = []
-                    continue
+                    break
 
         elif choix == 'c':
             if not clients or not vehicules:
