@@ -77,7 +77,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                        liste_client = file.read()
+                        liste_client = file.read().replace("\n", "")
 
                 except FileNotFoundError:
                     print("Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
@@ -93,6 +93,7 @@ def main():
                 print("Choix invalide.", file=sys.stderr)
 
             for client in liste_client[:-1].split(";"):
+                # Valide les quartiers de depart et de destination des clients
                 depart = client.split(',')[0]
                 destination = client.split(',')[1]
                 groupe = int(client.split(',')[2])
@@ -110,11 +111,13 @@ def main():
                     clients = []
                     break
 
-                clients.append({'depart': client.split(',')[0],
-                                'destination': client.split(',')[1],
-                                'groupe': int(client.split(',')[2]),
+                clients.append({'depart': depart,
+                                'destination': destination,
+                                'groupe': groupe,
                                 },
                                )
+            if not clients:
+                continue
 
             print("Voulez-vous entrer les informations des vehicule à partir d'un fichier .txt? (o/n): ", end="")
             utiliser_fichier = input()
@@ -127,7 +130,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                        liste_vehicule = file.read()
+                        liste_vehicule = file.read().replace("\n", "")
 
                 except FileNotFoundError as e:
                     print(e.strerror)
@@ -143,7 +146,7 @@ def main():
                 continue
 
             for depart_vehicule in liste_vehicule[:-1].split(';'):
-                # Valider zone existante et choisir un quartier arbitrairement pour le depart
+                # Valide la zone de depart des vehicule
                 for zone in zones:
                     if zone.contains(depart_vehicule):
                         zone.nb_vehicule += 1
