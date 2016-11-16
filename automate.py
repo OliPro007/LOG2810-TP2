@@ -58,6 +58,10 @@ def main():
                 print("ERREUR: Les zones doivent etre cree avant de pouvoir entrer les clients et les vehicules")
                 continue
 
+            # Reinitialise la liste de clients et de vehicule
+            clients = []
+            vehicules = []
+
             liste_client = ""
             liste_vehicule = ""
 
@@ -88,7 +92,7 @@ def main():
             else:
                 print("Choix invalide.", file=sys.stderr)
 
-            for client in liste_client.split(";"):
+            for client in liste_client[:-1].split(";"):
                 clients.append({'depart': client.split(',')[0],
                                 'destination': client.split(',')[1],
                                 'groupe': int(client.split(',')[2]),
@@ -121,9 +125,20 @@ def main():
                 print("Choix invalide.")
                 continue
 
-            for vehicule in liste_vehicule.split(';'):
+            for depart_vehicule in liste_vehicule[:-1].split(';'):
                 # Valider zone existante et choisir un quartier arbitrairement pour le depart
-                pass
+                for zone in zones:
+                    if zone.contains(depart_vehicule):
+                        zone.nb_vehicule += 1
+                        vehicules.append({'zone': depart_vehicule,
+                                          'quartier': zone.select_random_quartier(),
+                                          },
+                                         )
+                        break
+                else:
+                    print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule))
+                    vehicules = []
+                    continue
 
         elif choix == 'c':
             if not clients or not vehicules:
