@@ -7,7 +7,7 @@ class Quartier(object):
         self._arcs = {}
 
     def ajouter_arc(self, arc_name):
-        self._arcs[arc_name[-1:]] = Quartier(arc_name)
+        self._arcs[arc_name] = Quartier(self.name + arc_name)
 
     def get_noeud(self, arc):
         assert isinstance(arc, str)
