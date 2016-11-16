@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 
 def creer_lexique(path):
@@ -6,11 +6,11 @@ def creer_lexique(path):
         for file_name in os.listdir(path):
             if file_name.endswith(".txt"):
                 print(file_name)
-                with open(path+"/"+file_name) as file:
+                with open("{dir}/{file}".format(dir=path, file=file_name)) as file:
                     # TODO: Read the file and create the finite state automata
                     print(file.read())
     except FileNotFoundError as e:
-        print("ERREUR: {err}: {dir}".format(err=e.strerror, dir=path))
+        print("ERREUR: {err}: {dir}".format(err=e.strerror, dir=path), file=sys.stderr)
 
 
 def equilibrer_flotte():
@@ -46,20 +46,20 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                except FileNotFoundError as e:
-                    print(e.strerror)
+                except FileNotFoundError:
+                    print("Le fichier spécifié est introuvable: {0}".format(file_name), file=sys.stderr)
 
                 pass  # TODO: Complete when using a file
             elif utiliser_fichier is 'n':
                 pass  # TODO: Complete when not using a file
             else:
-                print("Choix invalide.")
+                print("Choix invalide.", file=sys.stderr)
         elif choix is 'c':
             pass  # TODO: Complete choice c
         elif choix is 'd':
             break
         else:
-            print("Choix invalide.")
+            print("Choix invalide.", file=sys.stderr)
 
 
 if __name__ == "__main__":
