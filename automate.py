@@ -1,5 +1,6 @@
 # Standard library imports
 import os
+import sys
 
 # Related third party imports
 import zone
@@ -12,7 +13,7 @@ def creer_lexique(path):
             if file_name.endswith(".txt"):
                 # TODO remove print of the file name
                 print(file_name)
-                with open(path+"/"+file_name) as file:
+                with open("{}/{}".format(path, file_name)) as file:
                     # TODO: Read the file and create the finite state automata
                     zones.append(zone.Zone(file_name))
                     print(file.read())
@@ -72,9 +73,9 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                        liste_client = file.read()
-                except FileNotFoundError as e:
-                    print(e.strerror)
+                liste_client = file.read()
+                except FileNotFoundError:
+                    print("Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
 
             elif utiliser_fichier == 'n':
                 print("Veuillez entrer les clients selon le format suivant:")
@@ -84,9 +85,7 @@ def main():
                 liste_client = input()
 
             else:
-                print("Choix invalide.")
-                continue
-
+                print("Choix invalide.", file=sys.stderr)
             # TODO populate client list
 
             print("Voulez-vous entrer les informations des vehicule à partir d'un fichier .txt? (o/n): ", end="")
@@ -115,12 +114,10 @@ def main():
                 continue
 
             # TODO populate vehicule list
-
         elif choix == 'c':
             if not clients or not vehicules:
                 print("ERREUR: Les clients et les vehicules doivent etre cree avant de pouvoir lancer la simulation")
                 continue
-
             pass  # TODO: Complete choice c
 
         elif choix == 'd':
