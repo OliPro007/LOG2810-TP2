@@ -73,20 +73,27 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
-                liste_client = file.read()
+                        liste_client = file.read()
+
                 except FileNotFoundError:
                     print("Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
+                    continue
 
             elif utiliser_fichier == 'n':
                 print("Veuillez entrer les clients selon le format suivant:")
                 print("quartier_depart_1,quartier_destination_1,#groupe;quartier_depart_2,quartier_destination_2,#groupe;")
                 print("Liste de client: ", end="")
-
                 liste_client = input()
 
             else:
                 print("Choix invalide.", file=sys.stderr)
-            # TODO populate client list
+
+            for client in liste_client.split(";"):
+                clients.append({'depart': client.split(',')[0],
+                                'destination': client.split(',')[1],
+                                'groupe': int(client.split(',')[2]),
+                                },
+                               )
 
             print("Voulez-vous entrer les informations des vehicule à partir d'un fichier .txt? (o/n): ", end="")
             utiliser_fichier = input()
@@ -100,6 +107,7 @@ def main():
                     with open(file_name) as file:
                         print(file.read())
                         liste_vehicule = file.read()
+
                 except FileNotFoundError as e:
                     print(e.strerror)
 
@@ -107,13 +115,16 @@ def main():
                 print("Veuillez entrer les clients selon le format suivant:")
                 print("zone_depart_vehicule_1;zone_depart_vehicule_2;zone_depart_vehicule_3;")
                 print("Liste de vehicule: ", end="")
-
                 liste_vehicule = input()
+
             else:
                 print("Choix invalide.")
                 continue
 
-            # TODO populate vehicule list
+            for vehicule in liste_vehicule.split(';'):
+                # Valider zone existante et choisir un quartier arbitrairement pour le depart
+                pass
+
         elif choix == 'c':
             if not clients or not vehicules:
                 print("ERREUR: Les clients et les vehicules doivent etre cree avant de pouvoir lancer la simulation")
