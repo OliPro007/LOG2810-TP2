@@ -93,6 +93,22 @@ def main():
                 print("Choix invalide.", file=sys.stderr)
 
             for client in liste_client[:-1].split(";"):
+                depart = client.split(',')[0]
+                destination = client.split(',')[1]
+                groupe = int(client.split(',')[2])
+
+                depart_valide = False
+                destination_valide = False
+                for zone in zones:
+                    if zone.contains(depart):
+                        depart_valide = True
+                    if zone.contains(destination):
+                        destination_valide = True
+
+                if not depart_valide or not destination_valide:
+                    print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule))
+                    vehicules = []
+                    continue
                 clients.append({'depart': client.split(',')[0],
                                 'destination': client.split(',')[1],
                                 'groupe': int(client.split(',')[2]),
@@ -130,7 +146,7 @@ def main():
                 for zone in zones:
                     if zone.contains(depart_vehicule):
                         zone.nb_vehicule += 1
-                        vehicules.append({'zone': depart_vehicule,
+                        vehicules.append({'zone': depart_vehicule.strip(),
                                           'quartier': zone.select_random_quartier(),
                                           },
                                          )
