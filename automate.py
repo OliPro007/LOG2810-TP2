@@ -30,6 +30,16 @@ def equilibrer_flotte():
 
 
 def lancer_simulation(zones, clients, vehicules):
+    """
+    Suggestion:
+    1- Noter les donner avant la simulation pour le tableau demande
+    2- faire la liste de tous les groupe present
+    3- faire des liste contenant tous les client par groupe
+    4- deplacer les client du 1er groupe
+    5- equilibrer les vehicule
+    6- refaire 4 avec prochain groupe
+    7- afficher les 2 tableau demande
+    """
     pass
 
 
@@ -111,6 +121,7 @@ def main():
                     clients = []
                     break
 
+                # Ajout du client a la liste
                 clients.append({'depart': depart,
                                 'destination': destination,
                                 'groupe': groupe,
@@ -152,6 +163,8 @@ def main():
                         zone.nb_vehicule += 1
                         vehicules.append({'zone': depart_vehicule.strip(),
                                           'quartier': zone.select_random_quartier(),
+                                          'nb_trajet_vide': 0,
+                                          'nb_trajet_plein': 0,
                                           },
                                          )
                         break
