@@ -14,7 +14,6 @@ class Zone(object):
                 current_state.ajouter_arc(char)
             current_state = current_state.get_noeud(char)
 
-
     def contains(self, zip_code):
         current_state = self._start.get_noeud(zip_code[0])
 

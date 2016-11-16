@@ -12,7 +12,6 @@ def creer_lexique(path):
         for file_name in os.listdir(path):
             if file_name.endswith(".txt"):
                 with open("{}/{}".format(path, file_name)) as file:
-                    # TODO: Read the file and create the finite state automata
                     zone = Zone(file_name.replace(".txt", ""))
                     zones.append(zone)
                     for line in file:
@@ -118,7 +117,7 @@ def main():
                         destination_valide = True
 
                 if not depart_valide or not destination_valide:
-                    print("ERREUR: zone invalide: {}  {}".format(depart, destination))
+                    print("ERREUR: zone invalide: {}  {}".format(depart, destination), file=sys.stderr)
                     clients = []
                     break
 
@@ -170,7 +169,7 @@ def main():
                                          )
                         break
                 else:
-                    print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule), file=sys.stderr)
+                    print("ERREUR: Zone de départ du véhicule inexistante: {}".format(depart_vehicule), file=sys.stderr)
                     vehicules = []
                     break
 
