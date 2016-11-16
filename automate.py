@@ -106,9 +106,10 @@ def main():
                         destination_valide = True
 
                 if not depart_valide or not destination_valide:
-                    print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule))
-                    vehicules = []
-                    continue
+                    print("ERREUR: zone invalide: {}  {}".format(depart, destination))
+                    clients = []
+                    break
+
                 clients.append({'depart': client.split(',')[0],
                                 'destination': client.split(',')[1],
                                 'groupe': int(client.split(',')[2]),
@@ -154,7 +155,7 @@ def main():
                 else:
                     print("ERREUR: zone de depart du vehicule inexistante: {}".format(depart_vehicule))
                     vehicules = []
-                    continue
+                    break
 
         elif choix == 'c':
             if not clients or not vehicules:
