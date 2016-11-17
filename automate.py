@@ -7,6 +7,12 @@ from zone import Zone
 
 
 def creer_lexique(path):
+    """
+    Crée des zones à partir de tous les fichiers .txt d'un répertoire.
+
+    :param path: Le chemin absolu ou relatif du répertoire.
+    :return: Une liste contenant toutes les zones construites.
+    """
     zones = []
     try:
         for file_name in os.listdir(path):
