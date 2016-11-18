@@ -1,0 +1,8 @@
+zip_code1;
+zip_code2;
+zip_code1;
+zip_code2;
+zip_code3;
+zip_code1;
+zip_code3;
+zip_code2;
