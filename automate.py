@@ -126,7 +126,7 @@ def main():
                             destination_valide = True
 
                     if not depart_valide or not destination_valide:
-                        print("ERREUR: zone invalide: {}  {}".format(depart, destination), file=sys.stderr)
+                        print("ERREUR: l'une des zones est invalide: depart={}  destination={}".format(depart, destination), file=sys.stderr)
                         clients = []
                         break
 
