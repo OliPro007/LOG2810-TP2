@@ -86,7 +86,9 @@ def main():
 
             if utiliser_fichier == 'o':
                 print("Veuillez entrer le chemin vers le fichier .txt contenant les clients sous le format suivant:")
-                print("\tquartier_départ_1,quartier_destination_1,#groupe;quartier_départ_2,quartier_destination_2,#groupe;")
+                print("\tquartier_départ_1,quartier_destination_1,#groupe;" \
+                      + "\n\tquartier_départ_2,quartier_destination_2,#groupe;"\
+                      + "\n\tquartier_départ_3,quartier_destination_3,#groupe;")
                 print("Chemin vers le fichier .txt: ", end="")
 
                 file_name = input()
@@ -108,31 +110,32 @@ def main():
             else:
                 print("Choix invalide.", file=sys.stderr)
 
-            for client in liste_client[:-1].split(";"):
-                # Valide les quartiers de depart et de destination des clients
-                depart = client.split(',')[0]
-                destination = client.split(',')[1]
-                groupe = int(client.split(',')[2])
+            for client in liste_client.split(";"):
+                if client:
+                    # Valide les quartiers de depart et de destination des clients
+                    depart = client.split(',')[0]
+                    destination = client.split(',')[1]
+                    groupe = int(client.split(',')[2])
 
-                depart_valide = False
-                destination_valide = False
-                for zone in zones:
-                    if zone.contains(depart):
-                        depart_valide = True
-                    if zone.contains(destination):
-                        destination_valide = True
+                    depart_valide = False
+                    destination_valide = False
+                    for zone in zones:
+                        if zone.contains(depart):
+                            depart_valide = True
+                        if zone.contains(destination):
+                            destination_valide = True
 
-                if not depart_valide or not destination_valide:
-                    print("ERREUR: zone invalide: {}  {}".format(depart, destination), file=sys.stderr)
-                    clients = []
-                    break
+                    if not depart_valide or not destination_valide:
+                        print("ERREUR: zone invalide: {}  {}".format(depart, destination), file=sys.stderr)
+                        clients = []
+                        break
 
-                # Ajout du client a la liste
-                clients.append({'depart': depart,
-                                'destination': destination,
-                                'groupe': groupe,
-                                },
-                               )
+                    # Ajout du client a la liste
+                    clients.append({'depart': depart,
+                                    'destination': destination,
+                                    'groupe': groupe,
+                                    },
+                                   )
             if not clients:
                 continue
 
@@ -141,7 +144,9 @@ def main():
 
             if utiliser_fichier == 'o':
                 print("Veuillez entrer le chemin vers le fichier .txt contenant les véhicules sous le format suivant: ")
-                print("zone_départ_véhicule_1;zone_départ_véhicule_2;zone_départ_véhicule_3;")
+                print("\tzone_départ_véhicule_1;" \
+                      + "\n\tzone_départ_véhicule_2;" \
+                      + "\n\tzone_départ_véhicule_3;")
                 print("Chemin vers le fichier .txt: ", end="")
                 file_name = input()
                 try:
@@ -162,22 +167,23 @@ def main():
                 print("Choix invalide.")
                 continue
 
-            for depart_vehicule in liste_vehicule[:-1].split(';'):
-                # Valide la zone de depart des vehicule
-                for zone in zones:
-                    if zone.contains(depart_vehicule):
-                        zone.nb_vehicule += 1
-                        vehicules.append({'zone': depart_vehicule.strip(),
-                                          'quartier': zone.select_random_quartier(),
-                                          'nb_trajet_vide': 0,
-                                          'nb_trajet_plein': 0,
-                                          },
-                                         )
+            for depart_vehicule in liste_vehicule.split(';'):
+                if depart_vehicule:
+                    # Valide la zone de depart des vehicule
+                    for zone in zones:
+                        if depart_vehicule == zone.name:
+                            zone.nb_vehicule += 1
+                            vehicules.append({'zone': depart_vehicule.strip(),
+                                              'quartier': zone.select_random_quartier(),
+                                              'nb_trajet_vide': 0,
+                                              'nb_trajet_plein': 0,
+                                              },
+                                             )
+                            break
+                    else:
+                        print("ERREUR: Zone de départ du véhicule inexistante: {}".format(depart_vehicule), file=sys.stderr)
+                        vehicules = []
                         break
-                else:
-                    print("ERREUR: Zone de départ du véhicule inexistante: {}".format(depart_vehicule), file=sys.stderr)
-                    vehicules = []
-                    break
 
         elif choix == 'c':
             if not clients or not vehicules:
