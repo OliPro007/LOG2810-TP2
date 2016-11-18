@@ -7,6 +7,9 @@ class Zone(object):
         self.nb_vehicule = 0
         self._start = Quartier("")
 
+    def __str__(self):
+        return self.name
+
     def ajouter_quartier(self, zip_code):
         """
         Ajoute un quartier (code postal) à la zone.

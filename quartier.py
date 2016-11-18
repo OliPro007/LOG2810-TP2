@@ -7,6 +7,9 @@ class Quartier(object):
         self.name = name
         self._arcs = {}
 
+    def __str__(self):
+        return self.name
+
     def ajouter_arc(self, arc_name):
         """
         Ajoute un arc à l'automate. L'arc pointe du quartier englobant vers un sous-quartier.
@@ -28,8 +31,8 @@ class Quartier(object):
 
     def get_random_noeud(self):
         """
-        Sélectionne un quartier au hasard.
+        Sélectionne un quartier au hasard en parcourant des arcs de façon récursive.
 
-        :return: Un sous-quartier ou self s'il n'existe pas de sous-quartier.
+        :return: Le résultat de la fonction sur un sous-quartier ou self s'il n'existe pas de sous-quartier.
         """
         return self._arcs[list(self._arcs.keys())[random.randint(0, len(self._arcs) - 1)]].get_random_noeud() if self._arcs else self
