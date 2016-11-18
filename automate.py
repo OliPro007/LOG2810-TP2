@@ -86,8 +86,8 @@ def main():
 
             if utiliser_fichier == 'o':
                 print("Veuillez entrer le chemin vers le fichier .txt contenant les clients sous le format suivant:")
-                print("\tquartier_départ_1,quartier_destination_1,#groupe;" \
-                      + "\n\tquartier_départ_2,quartier_destination_2,#groupe;"\
+                print("\tquartier_départ_1,quartier_destination_1,#groupe;"
+                      + "\n\tquartier_départ_2,quartier_destination_2,#groupe;"
                       + "\n\tquartier_départ_3,quartier_destination_3,#groupe;")
                 print("Chemin vers le fichier .txt: ", end="")
 
@@ -144,8 +144,8 @@ def main():
 
             if utiliser_fichier == 'o':
                 print("Veuillez entrer le chemin vers le fichier .txt contenant les véhicules sous le format suivant: ")
-                print("\tzone_départ_véhicule_1;" \
-                      + "\n\tzone_départ_véhicule_2;" \
+                print("\tzone_départ_véhicule_1;"
+                      + "\n\tzone_départ_véhicule_2;"
                       + "\n\tzone_départ_véhicule_3;")
                 print("Chemin vers le fichier .txt: ", end="")
                 file_name = input()
