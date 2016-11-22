@@ -104,12 +104,15 @@ def lancer_simulation(zones, clients, vehicules):
                 groupe['clients'].append(client)
 
     """4- deplacer les client du 1er groupe"""
-    def moveclient(client,vehicule):
+    def move_client(client,vehicule):
         for zone in zones:
             if zone.contains(client['destination']):
                 vehicule['zone'] = zone.name
                 vehicule['quartier'] = client['destination']
                 vehicule['nb_trajet_plein'] += 1
+                zone.nb_vehicule += 1
+            if zone.contains(client['depart']):
+                zone.nb_vehicule -= 1
 
     def getkey(item):
         return item['number']
@@ -146,11 +149,11 @@ def lancer_simulation(zones, clients, vehicules):
             for vehicule in list_vehicules_in_client_zone_libres:
                 if vehicule['quartier'] == client['depart']:
                     list_vehicules_occupes.append(vehicule)
-                    moveclient(client, vehicule)
+                    move_client(client, vehicule)
                     moved = True
             if not moved and list_vehicules_in_client_zone_libres:
                 import random
-                moveclient(client, random.choice(list_vehicules_in_client_zone_libres))
+                move_client(client, random.choice(list_vehicules_in_client_zone_libres))
             else:
                 print('Aucun vehicule disponible dans la zone')
         equilibrer_flotte(zones, vehicules, list_vehicules_occupes)
