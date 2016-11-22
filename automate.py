@@ -30,10 +30,17 @@ def creer_lexique(path):
     return zones
 
 
-def equilibrer_flotte(zones, clients, vehicules , vehicules_occupes):
-    print("BEFORE")
+def equilibrer_flotte(zones, vehicules , vehicules_occupes):
+    """print("BEFORE")
     for zone in zones:
-        print(zone.nb_vehicule)
+        print(zone.nb_vehicule)"""
+    def vehicule_occupe(vehicule):
+        occupe = False
+        for vehicule_occupe in vehicules_occupes:
+            if vehicule == vehicule_occupe:
+                occupe = True
+        return occupe
+
     desequilibre = True
     while desequilibre :
         desequilibre = False
@@ -43,19 +50,20 @@ def equilibrer_flotte(zones, clients, vehicules , vehicules_occupes):
                 if not done and zone1.nb_vehicule - zone2.nb_vehicule > 1:
                     desequilibre = True
                     for vehicule in vehicules:
-                        if not done and vehicule['zone'] == zone1.name:
+                        if not done and vehicule['zone'] == zone1.name and not vehicule_occupe(vehicule):
+                            vehicules_occupes.append(vehicule)
                             vehicule['zone'] = zone2.name
-                            vehicule['quartier'] = zone2.select_random_quartier()
+                            vehicule['quartier'] = zone2.select_random_quartier().name
                             vehicule['nb_trajet_vide'] +=1
                             zone1.nb_vehicule -= 1
                             zone2.nb_vehicule += 1
                             done = True
-    print("AFTER")
+    """print("AFTER")
     for zone in zones:
         print(zone.nb_vehicule)
     print("VEHICULE STATE ")
     for vehicule in vehicules:
-        print(vehicule)
+        print(vehicule)"""
 
 def lancer_simulation(zones, clients, vehicules):
     """
@@ -70,7 +78,11 @@ def lancer_simulation(zones, clients, vehicules):
     """
 
     """1- Noter les donner avant la simulation pour le tableau demande"""
-    presimulation_zones = zones.copy()
+    presimulation_zones = []
+    for zone in zones:
+        presimulation_zones.append({'name': zone.name,
+                                    'nb_vehicule': zone.nb_vehicule
+                                    },)
 
     """2- faire la liste de tous les groupe present"""
     liste_groupes = []
@@ -95,7 +107,7 @@ def lancer_simulation(zones, clients, vehicules):
     def moveclient(client,vehicule):
         for zone in zones:
             if zone.contains(client['destination']):
-                vehicule['zone'] = zone
+                vehicule['zone'] = zone.name
                 vehicule['quartier'] = client['destination']
                 vehicule['nb_trajet_plein'] += 1
 
@@ -104,13 +116,13 @@ def lancer_simulation(zones, clients, vehicules):
     liste_groupes.sort(key=getkey)
     for groupe in liste_groupes:
         list_vehicules_occupes = []
-        for client in groupe:
+        for client in groupe['clients']:
             zone_client = ''
             list_vehicules_in_client_zone = []
             list_vehicules_in_client_zone_libres = []
             for zone in zones:
                 if zone.contains(client['depart']):
-                    zone_client = zone
+                    zone_client = zone.name
             for vehicule in vehicules:
                 if vehicule['zone'] == zone_client:
                     list_vehicules_in_client_zone.append(vehicule)
@@ -122,15 +134,38 @@ def lancer_simulation(zones, clients, vehicules):
                         occupe = True
                 if not occupe:
                     list_vehicules_in_client_zone_libres.append(vehicule)
+            """print('zone du client : ' + zone_client)
+            print('vehicules dans la zone : ')
+            for vehicule in list_vehicules_in_client_zone:
+                print(vehicule)
+            print('vehicules libres dans la zone : ')
+            for vehicule in list_vehicules_in_client_zone_libres:
+                print(vehicule)"""
+
             moved = False
             for vehicule in list_vehicules_in_client_zone_libres:
                 if vehicule['quartier'] == client['depart']:
                     list_vehicules_occupes.append(vehicule)
                     moveclient(client, vehicule)
                     moved = True
-            if not moved:
-                moveclient(client, list_vehicules_in_client_zone_libres[0])
-        equilibrer_flotte(zones, clients, vehicules, list_vehicules_occupes)
+            if not moved and list_vehicules_in_client_zone_libres:
+                import random
+                moveclient(client, random.choice(list_vehicules_in_client_zone_libres))
+            else:
+                print('Aucun vehicule disponible dans la zone')
+        equilibrer_flotte(zones, vehicules, list_vehicules_occupes)
+
+    for vehicule in vehicules:
+        print("zone : " + vehicule['zone'] + ", quartier : " +
+              vehicule['quartier'] + ", nb trajets plein : " +
+              str(vehicule['nb_trajet_plein']) + ", nb trajets vides : " +
+              str(vehicule['nb_trajet_vide']) )
+    print('\n Debut')
+    for zone in presimulation_zones:
+        print(zone['name'] + " : " + str(zone['nb_vehicule']) + " vehicules.")
+    print('\n Fin')
+    for zone in zones:
+        print(zone.name + " : " + str(zone.nb_vehicule) + " vehicules.")
 
 
 def main():
@@ -260,7 +295,7 @@ def main():
                         if depart_vehicule == zone.name:
                             zone.nb_vehicule += 1
                             vehicules.append({'zone': depart_vehicule.strip(),
-                                              'quartier': zone.select_random_quartier(),
+                                              'quartier': zone.select_random_quartier().name,
                                               'nb_trajet_vide': 0,
                                               'nb_trajet_plein': 0,
                                               },
