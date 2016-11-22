@@ -30,7 +30,7 @@ def creer_lexique(path):
     return zones
 
 
-def equilibrer_flotte(zones, clients, vehicules):
+def equilibrer_flotte(zones, clients, vehicules , vehicules_occupes):
     print("BEFORE")
     for zone in zones:
         print(zone.nb_vehicule)
@@ -68,7 +68,69 @@ def lancer_simulation(zones, clients, vehicules):
     6- refaire 4 avec prochain groupe
     7- afficher les 2 tableau demande
     """
-    equilibrer_flotte(zones, clients, vehicules);
+
+    """1- Noter les donner avant la simulation pour le tableau demande"""
+    presimulation_zones = zones.copy()
+
+    """2- faire la liste de tous les groupe present"""
+    liste_groupes = []
+
+    for client in clients:
+        exists = False
+        for groupe in liste_groupes:
+            if groupe['number'] == client['groupe']:
+                exists = True
+        if not exists:
+            liste_groupes.append({'number': client['groupe'],
+                                 'clients': []
+                                  },)
+
+    """3- faire des liste contenant tous les client par groupe"""
+    for client in clients:
+        for groupe in liste_groupes:
+            if groupe['number'] == client['groupe']:
+                groupe['clients'].append(client)
+
+    """4- deplacer les client du 1er groupe"""
+    def moveclient(client,vehicule):
+        for zone in zones:
+            if zone.contains(client['destination']):
+                vehicule['zone'] = zone
+                vehicule['quartier'] = client['destination']
+                vehicule['nb_trajet_plein'] += 1
+
+    def getkey(item):
+        return item['number']
+    liste_groupes.sort(key=getkey)
+    for groupe in liste_groupes:
+        list_vehicules_occupes = []
+        for client in groupe:
+            zone_client = ''
+            list_vehicules_in_client_zone = []
+            list_vehicules_in_client_zone_libres = []
+            for zone in zones:
+                if zone.contains(client['depart']):
+                    zone_client = zone
+            for vehicule in vehicules:
+                if vehicule['zone'] == zone_client:
+                    list_vehicules_in_client_zone.append(vehicule)
+
+            occupe = False
+            for vehicule in list_vehicules_in_client_zone:
+                for vehicule_occupe in list_vehicules_occupes:
+                    if vehicule == vehicule_occupe:
+                        occupe = True
+                if not occupe:
+                    list_vehicules_in_client_zone_libres.append(vehicule)
+            moved = False
+            for vehicule in list_vehicules_in_client_zone_libres:
+                if vehicule['quartier'] == client['depart']:
+                    list_vehicules_occupes.append(vehicule)
+                    moveclient(client, vehicule)
+                    moved = True
+            if not moved:
+                moveclient(client, list_vehicules_in_client_zone_libres[0])
+        equilibrer_flotte(zones, clients, vehicules, list_vehicules_occupes)
 
 
 def main():
