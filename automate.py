@@ -27,13 +27,35 @@ def creer_lexique(path):
     except FileNotFoundError:
         print("ERREUR: Le chemin d’accès spécifié est introuvable : {}".format(path), file=sys.stderr)
         return []
-
     return zones
 
 
-def equilibrer_flotte():
-    pass
-
+def equilibrer_flotte(zones, clients, vehicules):
+    print("BEFORE")
+    for zone in zones:
+        print(zone.nb_vehicule)
+    desequilibre = True
+    while desequilibre :
+        desequilibre = False
+        done = False
+        for zone1 in zones:
+            for zone2 in zones:
+                if not done and zone1.nb_vehicule - zone2.nb_vehicule > 1:
+                    desequilibre = True
+                    for vehicule in vehicules:
+                        if not done and vehicule['zone'] == zone1.name:
+                            vehicule['zone'] = zone2.name
+                            vehicule['quartier'] = zone2.select_random_quartier()
+                            vehicule['nb_trajet_vide'] +=1
+                            zone1.nb_vehicule -= 1
+                            zone2.nb_vehicule += 1
+                            done = True
+    print("AFTER")
+    for zone in zones:
+        print(zone.nb_vehicule)
+    print("VEHICULE STATE ")
+    for vehicule in vehicules:
+        print(vehicule)
 
 def lancer_simulation(zones, clients, vehicules):
     """
@@ -46,7 +68,7 @@ def lancer_simulation(zones, clients, vehicules):
     6- refaire 4 avec prochain groupe
     7- afficher les 2 tableau demande
     """
-    pass
+    equilibrer_flotte(zones, clients, vehicules);
 
 
 def main():
@@ -95,6 +117,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
+                        file.seek(0)
                         liste_client = file.read().replace("\n", "")
 
                 except FileNotFoundError:
@@ -152,6 +175,7 @@ def main():
                 try:
                     with open(file_name) as file:
                         print(file.read())
+                        file.seek(0)
                         liste_vehicule = file.read().replace("\n", "")
 
                 except FileNotFoundError as e:
@@ -189,7 +213,7 @@ def main():
             if not clients or not vehicules:
                 print("ERREUR: Les clients et les véhicules doivent être créés avant de pouvoir lancer la simulation", file=sys.stderr)
                 continue
-            pass  # TODO: Complete choice c
+            lancer_simulation(zones, clients, vehicules)
 
         elif choix == 'd':
             break
