@@ -1,9 +1,18 @@
+# encoding: utf-8
+# Python2 support
+from __future__ import unicode_literals
+
 import random
+import sys
 
 
 class Quartier(object):
     def __init__(self, name):
-        assert isinstance(name, str)
+        if sys.version_info[0] < 3:
+            assert isinstance(name, unicode)
+        else:
+            assert isinstance(name, str)
+
         self.name = name
         self._arcs = {}
 
@@ -16,7 +25,11 @@ class Quartier(object):
 
         :param arc_name: Le nom de l'arc à créer. Il s'agit d'un seul caractère.
         """
-        assert isinstance(arc_name, str)
+        if sys.version_info[0] < 3:
+            assert isinstance(arc_name, unicode)
+        else:
+            assert isinstance(arc_name, str)
+
         assert len(arc_name) == 1
         self._arcs[arc_name] = Quartier(self.name + arc_name)
 

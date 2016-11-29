@@ -1,3 +1,11 @@
+# encoding: utf-8
+# Python2 future imports
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import with_statement
+from __future__ import generators
+from __future__ import nested_scopes
+
 # Standard library imports
 import copy
 import os
@@ -6,6 +14,11 @@ import sys
 
 # Related third party imports
 from zone import Zone
+
+# Other Python2 support
+if sys.version_info[0] < 3:
+    FileNotFoundError = IOError
+    input = raw_input
 
 
 def client_dans_groupe(groupe, client):
@@ -21,7 +34,6 @@ def selectionner_vehicule(vehicules, client):
         return random.choice(vehicules)
     else:
         return None
-
 
 
 def creer_lexique(path):
@@ -58,7 +70,7 @@ def equilibrer_flotte(zones, vehicules, zone_manque):
             nb_vehicule_max = len(list(filter(lambda x: x['zone'] == zone_max.name and not x['occupe'], vehicules)))
 
     if zone_max is None:
-        return # aucune zone n'a de vehicule libre alors l'equilibrage est impossible.
+        return  # aucune zone n'a de vehicule libre alors l'equilibrage est impossible.
 
     for i in range(0, nb_vehicule_max//2):
         vehicule = random.choice(list(filter(lambda x: x['zone'] == zone_max.name, vehicules)))
@@ -101,7 +113,6 @@ def lancer_simulation(clients, vehicules, zones):
             for vehicule in vehicules:
                 if vehicule['zone'] == zone_client.name and not vehicule['occupe']:
                     vehicule_disponible.append(vehicule)
-
 
             vehicule_choisi = selectionner_vehicule(vehicule_disponible, client)
             if not vehicule_choisi:
