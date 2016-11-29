@@ -35,4 +35,4 @@ class Quartier(object):
 
         :return: Le résultat de la fonction sur un sous-quartier ou self s'il n'existe pas de sous-quartier.
         """
-        return random.choice(self._arcs).get_random_noeud() if self._arcs else self
+        return self._arcs[random.choice(list(self._arcs.keys()))].get_random_noeud() if self._arcs else self
