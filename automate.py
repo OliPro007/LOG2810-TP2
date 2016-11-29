@@ -3,8 +3,6 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import with_statement
-from __future__ import generators
-from __future__ import nested_scopes
 
 # Standard library imports
 import copy
@@ -16,9 +14,10 @@ import sys
 from zone import Zone
 
 # Other Python2 support
-if sys.version_info[0] < 3:
-    FileNotFoundError = IOError
+try:
     input = raw_input
+except NameError:
+    pass
 
 
 def client_dans_groupe(groupe, client):
@@ -53,11 +52,12 @@ def creer_lexique(path):
                     for line in file:
                         line = line.replace("\n", "")
                         zone.ajouter_quartier(line)
-
-    except FileNotFoundError:
+    except EnvironmentError:
         print("ERREUR: Le chemin d’accès spécifié est introuvable : {}".format(path), file=sys.stderr)
         return []
-    return zones
+    else:
+        print("Fichiers lus avec succès!")
+        return zones
 
 
 def equilibrer_flotte(zones, vehicules, zone_manque):
@@ -69,16 +69,14 @@ def equilibrer_flotte(zones, vehicules, zone_manque):
             zone_max = zone
             nb_vehicule_max = len(list(filter(lambda x: x['zone'] == zone_max.name and not x['occupe'], vehicules)))
 
-    if zone_max is None:
-        return  # aucune zone n'a de vehicule libre alors l'equilibrage est impossible.
-
-    for i in range(0, nb_vehicule_max//2):
-        vehicule = random.choice(list(filter(lambda x: x['zone'] == zone_max.name, vehicules)))
-        vehicule['zone'] = zone_manque.name
-        vehicule['quartier'] = zone_manque.select_random_quartier().name
-        zone_max.nb_vehicule -= 1
-        zone_manque.nb_vehicule += 1
-        vehicule['nb_trajet_vide'] += 1
+    if zone_max is not None:
+        for i in range(0, nb_vehicule_max//2):
+            vehicule = random.choice(list(filter(lambda x: x['zone'] == zone_max.name, vehicules)))
+            vehicule['zone'] = zone_manque.name
+            vehicule['quartier'] = zone_manque.select_random_quartier().name
+            zone_max.nb_vehicule -= 1
+            zone_manque.nb_vehicule += 1
+            vehicule['nb_trajet_vide'] += 1
 
 
 def lancer_simulation(clients, vehicules, zones):
@@ -140,17 +138,16 @@ def lancer_simulation(clients, vehicules, zones):
                 vehicule['occupe'] = False
 
     # Apres simulation
+    print("État des véhicules:")
     for vehicule in vehicules:
-        print("zone : " + vehicule['zone'] + ", quartier : " +
-              vehicule['quartier'] + ", nb trajets plein : " +
-              str(vehicule['nb_trajet_plein']) + ", nb trajets vides : " +
-              str(vehicule['nb_trajet_vide']))
-    print('\n Debut')
+        print("\tzone : {}, quartier : {}, nb trajets plein : {}, nb trajets vides : {}"
+              .format(vehicule['zone'], vehicule['quartier'], vehicule['nb_trajet_plein'], vehicule['nb_trajet_vide']))
+    print("\nDebut:")
     for zone in presimulation_zones:
-        print(zone.name + " : " + str(zone.nb_vehicule) + " vehicules.")
-    print('\n Fin')
+        print("\t{} : {} véhicules".format(zone.name, zone.nb_vehicule))
+    print("\nFin:")
     for zone in zones:
-        print(zone.name + " : " + str(zone.nb_vehicule) + " vehicules.")
+        print("\t{} : {} véhicules".format(zone.name, zone.nb_vehicule))
 
 
 def main():
@@ -198,13 +195,12 @@ def main():
                 file_name = input()
                 try:
                     with open(file_name) as file:
-                        print(file.read())
-                        file.seek(0)
                         liste_client = file.read().replace("\n", "")
-
-                except FileNotFoundError:
-                    print("Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
+                except EnvironmentError:
+                    print("ERREUR: Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
                     continue
+                else:
+                    print("Fichier lu avec succès!")
 
             elif utiliser_fichier == 'n':
                 print("Veuillez entrer les clients selon le format suivant:")
@@ -231,7 +227,7 @@ def main():
                             destination_valide = True
 
                     if not depart_valide or not destination_valide:
-                        print("ERREUR: l'une des zones est invalide: depart={}  destination={}".format(depart, destination), file=sys.stderr)
+                        print("ERREUR: l'une des zones est invalide: départ={}  destination={}".format(depart, destination), file=sys.stderr)
                         clients = []
                         break
 
@@ -256,12 +252,11 @@ def main():
                 file_name = input()
                 try:
                     with open(file_name) as file:
-                        print(file.read())
-                        file.seek(0)
                         liste_vehicule = file.read().replace("\n", "")
-
-                except FileNotFoundError as e:
-                    print(e.strerror, file=sys.stderr)
+                except EnvironmentError:
+                    print("ERREUR: Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
+                else:
+                    print("Fichier lu avec succès!")
 
             elif utiliser_fichier == 'n':
                 print("Veuillez entrer les clients selon le format suivant:")
@@ -270,7 +265,7 @@ def main():
                 liste_vehicule = input()
 
             else:
-                print("Choix invalide.")
+                print("ERREUR: Choix invalide.")
                 continue
 
             for depart_vehicule in liste_vehicule.split(';'):
@@ -302,7 +297,7 @@ def main():
             break
 
         else:
-            print("Choix invalide.")
+            print("ERREUR: Choix invalide.")
 
 
 if __name__ == "__main__":
