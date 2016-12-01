@@ -23,9 +23,11 @@ except NameError:
 def client_dans_groupe(groupe, client):
     """
     Indique si un client appartiens à un groupe.
+
     :param groupe: Le groupe.
     :param client: Le client.
-    :return: true si le client est dans ce groupe, false sinon."""
+    :return: true si le client est dans ce groupe, false sinon.
+    """
     return client['groupe'] == groupe
 
 
@@ -33,9 +35,11 @@ def selectionner_vehicule(vehicules, client):
     """
     Séléctionne un véhicule pour un client dans sa zone.
     Priorise un véhicule dans le même quartier.
+
     :param vehicules: Liste des véhicules disponibles.
     :param client: Le client qui se cherche un vehicule.
-    :return: Le véhicule adapté à ce client ou  None si aucun véhicule est trouvé."""
+    :return: Le véhicule adapté à ce client ou  None si aucun véhicule est trouvé.
+    """
     for vehicule in vehicules:
         if vehicule['quartier'] == client['depart']:
             return vehicule
@@ -75,9 +79,11 @@ def equilibrer_flotte(zones, vehicules, zone_manque):
     """
     Transfert des vehicules libres depuis la zone avec le plus de vehicules libres
     vers celle ou il en manque.
+
     :param zones: La liste des zones.
     :param vehicules: La liste des véhicules.
-    :param zone_manque: La zone n'ayant aucun vehicule libre."""
+    :param zone_manque: La zone n'ayant aucun vehicule libre.
+    """
 
     # Trouver la zone avec le plus de véhicules libres.
     zone_max = None
@@ -104,9 +110,11 @@ def lancer_simulation(clients, vehicules, zones):
     Lance la simulation des déplacements des clients.
     La simulation fonctionne en vagues de groupes.
     Si un client n'a aucun vehicule libre dans sa zone, equilibrer flotte est appelée.
+
     :param clients: La liste des clients è déplacer.
     :param vehicules: La liste des véhicules.
-    :param zones: La liste des zones."""
+    :param zones: La liste des zones.
+    """
 
     # 1- Noter les donner avant la simulation pour le tableau demande
     presimulation_zones = copy.deepcopy(zones)
@@ -116,15 +124,18 @@ def lancer_simulation(clients, vehicules, zones):
     liste_groupes.sort()
 
     for groupe in liste_groupes:
+        # Sélectionne tous les clients appartenant au groupe
         for client in filter(lambda x: client_dans_groupe(groupe, x), clients):
             zone_client = ''
             vehicule_disponible = []
 
+            # Identifier la zone de départ du client
             for zone in zones:
                 if zone.contains(client['depart']):
                     zone_client = zone
                     break
 
+            # Bâtir la liste des véhicules disponible et équilibrer la flotte si nécessaire
             for vehicule in vehicules:
                 if vehicule['zone'] == zone_client.name and not vehicule['occupe']:
                     vehicule_disponible.append(vehicule)
@@ -141,6 +152,7 @@ def lancer_simulation(clients, vehicules, zones):
                     print("Aucun vehicule disponible")
                     continue
 
+            # Identifie la zone de destination du client auprès du véhicule choisi
             for zone in zones:
                 if zone.contains(client['destination']):
                     vehicule_choisi['zone'] = zone.name
@@ -159,9 +171,11 @@ def lancer_simulation(clients, vehicules, zones):
     for vehicule in vehicules:
         print("\tzone : {}, quartier : {}, nb trajets plein : {}, nb trajets vides : {}"
               .format(vehicule['zone'], vehicule['quartier'], vehicule['nb_trajet_plein'], vehicule['nb_trajet_vide']))
+
     print("\nDebut:")
     for zone in presimulation_zones:
         print("\t{} : {} véhicules".format(zone.name, zone.nb_vehicule))
+
     print("\nFin:")
     for zone in zones:
         print("\t{} : {} véhicules".format(zone.name, zone.nb_vehicule))
@@ -225,8 +239,8 @@ def main():
 
             elif utiliser_fichier == 'n':
                 print("Veuillez entrer les clients selon le format suivant:")
-                print(
-                    "\tquartier_départ_1,quartier_destination_1,#groupe;quartier_départ_2,quartier_destination_2,#groupe;")
+                print("\tquartier_départ_1,quartier_destination_1,#groupe;"
+                      + "quartier_départ_2,quartier_destination_2,#groupe;")
                 print("Liste de client: ", end="")
                 liste_client = input()
 
@@ -249,9 +263,8 @@ def main():
                             destination_valide = True
 
                     if not depart_valide or not destination_valide:
-                        print("ERREUR: l'une des zones est invalide: départ={}  destination={}".format(depart,
-                                                                                                       destination),
-                              file=sys.stderr)
+                        print("ERREUR: l'une des zones est invalide: départ={}  destination={}"
+                              .format(depart, destination), file=sys.stderr)
                         clients = []
                         break
 
@@ -273,12 +286,14 @@ def main():
                       + "\n\tzone_départ_véhicule_2;"
                       + "\n\tzone_départ_véhicule_3;")
                 print("Chemin vers le fichier .txt: ", end="")
+
                 file_name = input()
                 try:
                     with open(file_name) as file:
                         liste_vehicule = file.read().replace("\n", "")
                 except EnvironmentError:
                     print("ERREUR: Le fichier spécifié est introuvable: {}".format(file_name), file=sys.stderr)
+                    continue
                 else:
                     print("Fichier lu avec succès!")
 
@@ -307,8 +322,8 @@ def main():
                                              )
                             break
                     else:
-                        print("ERREUR: Zone de départ du véhicule inexistante: {}".format(depart_vehicule),
-                              file=sys.stderr)
+                        print("ERREUR: Zone de départ du véhicule inexistante: {}"
+                              .format(depart_vehicule), file=sys.stderr)
                         vehicules = []
                         break
 
