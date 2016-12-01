@@ -175,6 +175,9 @@ def main():
                 print("ERREUR: Les zones doivent être créées avant de pouvoir entrer les clients et les véhicules", file=sys.stderr)
                 continue
 
+            for zone in zones:
+                zone.nb_vehicule = 0
+
             # Reinitialise la liste de clients et de vehicule
             clients = []
             vehicules = []
