@@ -1,0 +1,9 @@
+INSTRUCTIONS
+============
+1- Démarrer le programme: python automate.py
+2- Entrer le chemin du répertoire contenant les fichiers .txt des zones avec l'option 'a'. Ce chemin peut être relatif au répertoire de travail (working directory) ou absolue
+3- Entrer les clients et les vehicules avec l'option 'b'. Cela peut être fait en donnant un chemin vers un fichier .txt ou en entrant les informations directement à la ligne de commande
+4- Lancer la simulation avec l'option 'c'
+
+Il est possible de quitter le programme avec l'option 'd'.
+Il est possible de modifier les zones, clients ou véhicules en resélectionnant l'option correspondante ('a' ou 'b')
